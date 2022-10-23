@@ -39,7 +39,7 @@ class EXU(implicit val p: NutCoreConfig) extends NutCoreModule {
   val src2 = io.in.bits.data.src2(XLEN-1,0)
 
   val (fuType, fuOpType) = (io.in.bits.ctrl.fuType, io.in.bits.ctrl.fuOpType)
-
+  // A vector of valid signal for each fu
   val fuValids = Wire(Vec(FuType.num, Bool()))
   (0 until FuType.num).map (i => fuValids(i) := (fuType === i.U) && io.in.valid && !io.flush)
 
@@ -115,7 +115,7 @@ class EXU(implicit val p: NutCoreConfig) extends NutCoreModule {
   io.out.bits.commits(FuType.mou) := 0.U
 
   io.in.ready := !io.in.valid || io.out.fire()
-
+  // ???
   io.forward.valid := io.in.valid
   io.forward.wb.rfWen := io.in.bits.ctrl.rfWen
   io.forward.wb.rfDest := io.in.bits.ctrl.rfDest

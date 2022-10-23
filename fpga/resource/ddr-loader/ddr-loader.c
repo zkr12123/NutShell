@@ -22,7 +22,7 @@ static const struct BoardConfig {
   uintptr_t gpio_reset_base;
 } board_config [] = {
   [BOARD_ultraZ] = {"ultraZ", 0x40000000, 0x40000000, 0x80001000},
-  [BOARD_axu3cg] = {"axu3cg", 0x40000000, 0x40000000, 0x80001000},
+  // [BOARD_axu3cg] = {"axu3cg", 0x40000000, 0x40000000, 0x80001000},
   [BOARD_zedboard] = {"zedboard", 0x10000000, 0x10000000, 0x41200000},
   [BOARD_zcu102] = {"zcu102", 0x80000000, 0x800000000, 0x80010000},
   [BOARD_sidewinder] = {"sidewinder", 0x80000000, 0x800000000, 0x80010000}
@@ -56,7 +56,7 @@ void loader(char *imgfile, uintptr_t offset) {
   my_fread(imgfile, ddr_base + offset);
 //  my_fread(dtbfile, ddr_base + offset + 0x8);
 //  strcpy(ddr_base, "t");
-  strcpy(ddr_base + 0x1000, "ref");
+//  strcpy(ddr_base + 0x1000, "ref");
 }
 
 void* create_map(size_t size, int fd, off_t offset) {
