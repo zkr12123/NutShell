@@ -5,18 +5,18 @@ package nutcore
 import chisel3._ 
 import chisel3.util._ 
 
-class CustomFuOpType {
+object CustomFuOpType {
     def default = "b0000000".U 
 }
 
 //FunctionUnitIO: src1, src2, func(FuOptype)
 //FuOptype = UInt(7.W)
-class CustomFuIO extents FunctionUnitIO {
+class CustomFuIO extends FunctionUnitIO {
     val cfIn = Flipped(new CtrlFlowIO)
 }
 
 class CustomDecAdder extends NutCoreModule {
-    val io = new CustomFuIO
+    val io = IO( new CustomFuIO )
 
     
 
@@ -25,7 +25,8 @@ class CustomDecAdder extends NutCoreModule {
     val src1 = io.in.bits.src1
     val src2 = io.in.bits.src2 // DontCare
     val func = io.in.bits.func //DontCare
-    val funct3 = io.in.cfIn.instr(14,12) // will be used to decode funct3
+    // val instr = io.cfIn.instr // will be used to decode funct3
+    val funct3 = io.cfIn.instr(14,12)
     
     val decTable: Array[(UInt, UInt)] = Array(
         "b000".U  -> 1.U(XLEN.W),

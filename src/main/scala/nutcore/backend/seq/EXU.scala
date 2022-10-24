@@ -47,9 +47,12 @@ class EXU(implicit val p: NutCoreConfig) extends NutCoreModule {
   // Simple FU, completes in 0 cycle
   val custom = Module(new CustomDecAdder)
   val customOut = custom.io.out.bits
+  custom.io.in.bits.src1 := src1
+  custom.io.in.bits.src2 := DontCare
+  custom.io.in.bits.func := DontCare
   custom.io.in.valid := fuValids(FuType.custom)
   custom.io.cfIn := io.in.bits.cf
-  customOut.ready := true.B 
+  custom.io.out.ready := true.B 
 
   val alu = Module(new ALU(hasBru = true))
   val aluOut = alu.access(valid = fuValids(FuType.alu), src1 = src1, src2 = src2, func = fuOpType)

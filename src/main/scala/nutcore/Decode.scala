@@ -62,7 +62,7 @@ object FuType extends HasNutCoreConst {
   def mou = "b100".U
   def bru = if(IndependentBru) "b101".U
             else               alu
-  def custom "b110".U // add custom fu
+  def custom = "b110".U // add custom fu
   def apply() = UInt(log2Up(num).W)
 }
 
