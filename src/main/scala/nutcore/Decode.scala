@@ -54,7 +54,7 @@ object SrcType {
 }
 
 object FuType extends HasNutCoreConst {
-  def num = 5
+  def num = 7 // change from 5 to 7 to support generation of valid vector with 7-bits in EXU
   def alu = "b000".U
   def lsu = "b001".U
   def mdu = "b010".U
@@ -62,6 +62,7 @@ object FuType extends HasNutCoreConst {
   def mou = "b100".U
   def bru = if(IndependentBru) "b101".U
             else               alu
+  def custom "b110".U // add custom fu
   def apply() = UInt(log2Up(num).W)
 }
 
@@ -77,7 +78,8 @@ object Instructions extends HasInstrType with HasNutCoreParameter {
     (if (HasCExtension) RVCInstr.table else Nil) ++
     Priviledged.table ++
     RVAInstr.table ++
-    RVZicsrInstr.table ++ RVZifenceiInstr.table
+    RVZicsrInstr.table ++ RVZifenceiInstr.table ++
+    RVCustom.table
 }
 
 object CInstructions extends HasInstrType with HasNutCoreParameter{

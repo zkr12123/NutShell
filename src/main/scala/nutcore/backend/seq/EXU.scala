@@ -43,6 +43,14 @@ class EXU(implicit val p: NutCoreConfig) extends NutCoreModule {
   val fuValids = Wire(Vec(FuType.num, Bool()))
   (0 until FuType.num).map (i => fuValids(i) := (fuType === i.U) && io.in.valid && !io.flush)
 
+  // Add custom FU
+  // Simple FU, completes in 0 cycle
+  val custom = Module(new CustomDecAdder)
+  val customOut = custom.io.out.bits
+  custom.io.in.valid := fuValids(FuType.custom)
+  custom.io.cfIn := io.in.bits.cf
+  customOut.ready := true.B 
+
   val alu = Module(new ALU(hasBru = true))
   val aluOut = alu.access(valid = fuValids(FuType.alu), src1 = src1, src2 = src2, func = fuOpType)
   alu.io.cfIn := io.in.bits.cf
@@ -108,6 +116,10 @@ class EXU(implicit val p: NutCoreConfig) extends NutCoreModule {
     FuType.mdu -> mdu.io.out.valid
   ))
 
+  // default to dontCare
+  // add customFU commit
+  io.out.bits.commits := DontCare
+  io.out.bits.commits(FuType.custom) := customOut
   io.out.bits.commits(FuType.alu) := aluOut
   io.out.bits.commits(FuType.lsu) := lsuOut
   io.out.bits.commits(FuType.csr) := csrOut
