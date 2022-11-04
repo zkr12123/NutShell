@@ -36,7 +36,7 @@ class CustomDecAdder extends NutCoreModule {
         "b100".U  -> 10000.U(XLEN.W),
         "b101".U  -> 100000.U(XLEN.W),
         "b110".U  -> 1000000.U(XLEN.W),
-        "b111".U  -> 0.U(XLEN.W)
+        "b111".U  -> 10000000.U(XLEN.W)
     )
     val default = 0.U(XLEN.W)
     val add = MuxLookup(funct3, default, decTable)
