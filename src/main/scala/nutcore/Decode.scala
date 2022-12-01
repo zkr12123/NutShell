@@ -54,7 +54,7 @@ object SrcType {
 }
 
 object FuType extends HasNutCoreConst {
-  def num = 7 // change from 5 to 7 to support generation of valid vector with 7-bits in EXU
+  def num = 8 // change from 5 to 7 to support generation of valid vector with 7-bits in EXU
   def alu = "b000".U
   def lsu = "b001".U
   def mdu = "b010".U
@@ -62,7 +62,8 @@ object FuType extends HasNutCoreConst {
   def mou = "b100".U
   def bru = if(IndependentBru) "b101".U
             else               alu
-  def custom = "b110".U // add custom fu
+  def adddec  = "b110".U // add custom fu
+  def sigmoid = "b111".U
   def apply() = UInt(log2Up(num).W)
 }
 

@@ -1,9 +1,8 @@
-
-
 package nutcore
 
 import chisel3._ 
 import chisel3.util._ 
+import sigmoid.SigmoidImpl
 
 object CustomFuOpType {
     def default = "b0000000".U 
@@ -15,10 +14,24 @@ class CustomFuIO extends FunctionUnitIO {
     val cfIn = Flipped(new CtrlFlowIO)
 }
 
-class CustomDecAdder extends NutCoreModule {
+class SigmoidFu(hasFloatWrapper: Boolean=false) extends NutCoreModule {
     val io = IO( new CustomFuIO )
 
+    val valid = io.in.valid
+    val src1 = io.in.bits.src1
     
+    val sigmoidHardware = Module(new SigmoidImpl).io
+
+    sigmoidHardware.in := src1(11, 0)
+
+    // out
+    io.in.ready := io.out.ready
+    io.out.valid := valid
+    io.out.bits := sigmoidHardware.out
+}
+
+class CustomDecAdder extends NutCoreModule {
+    val io = IO( new CustomFuIO )
 
     // input signals
     val valid = io.in.valid
