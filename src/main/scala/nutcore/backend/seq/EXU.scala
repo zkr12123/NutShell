@@ -45,14 +45,14 @@ class EXU(implicit val p: NutCoreConfig) extends NutCoreModule {
 
   // Add custom FU
   // Simple FU, completes in 0 cycle
-  val adddec = Module(new CustomDecAdder)
-  val adddecOut = adddec.io.out.bits
-  adddec.io.in.bits.src1 := src1
-  adddec.io.in.bits.src2 := DontCare
-  adddec.io.in.bits.func := DontCare
-  adddec.io.in.valid := fuValids(FuType.adddec)
-  adddec.io.cfIn := io.in.bits.cf
-  adddec.io.out.ready := true.B 
+  // val adddec = Module(new CustomDecAdder)
+  // val adddecOut = adddec.io.out.bits
+  // adddec.io.in.bits.src1 := src1
+  // adddec.io.in.bits.src2 := DontCare
+  // adddec.io.in.bits.func := DontCare
+  // adddec.io.in.valid := fuValids(FuType.adddec)
+  // adddec.io.cfIn := io.in.bits.cf
+  // adddec.io.out.ready := true.B 
   // SigmoidFu
   val sigmoid = Module(new SigmoidFu(hasFloatWrapper=false))
   val sigmoidOut = sigmoid.io.out.bits
@@ -132,7 +132,7 @@ class EXU(implicit val p: NutCoreConfig) extends NutCoreModule {
   // default to dontCare
   // add customFU commit
   io.out.bits.commits := DontCare
-  io.out.bits.commits(FuType.adddec)  := adddecOut
+  // io.out.bits.commits(FuType.adddec)  := adddecOut
   io.out.bits.commits(FuType.sigmoid) := sigmoidOut
   io.out.bits.commits(FuType.alu) := aluOut
   io.out.bits.commits(FuType.lsu) := lsuOut

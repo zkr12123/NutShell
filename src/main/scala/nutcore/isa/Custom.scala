@@ -10,7 +10,7 @@ object RVCustom extends HasInstrType {
     def SIGMOID    = BitPat("b0000000_?????_?????_???_?????_0101011")
 
     val table = Array(
-        ADDDEC            -> List(InstrR, FuType.adddec, CustomFuOpType.default),
+        // ADDDEC            -> List(InstrR, FuType.adddec, CustomFuOpType.default),
         SIGMOID           -> List(InstrR, FuType.sigmoid, CustomFuOpType.default)
     ) // Decode table used in IDU
 }
