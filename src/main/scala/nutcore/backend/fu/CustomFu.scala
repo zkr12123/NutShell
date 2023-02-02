@@ -14,21 +14,59 @@ class CustomFuIO extends FunctionUnitIO {
     val cfIn = Flipped(new CtrlFlowIO)
 }
 
-class SigmoidFu(hasFloatWrapper: Boolean=false) extends NutCoreModule {
+// class FuImplIO extends NutCoreBundle {
+//     // Wrapper IO class for FU implementations
+//     val in = Input(UInt(XLEN.W))
+//     val out = Output(UInt(XLEN.W))
+// }
+
+
+class CustomFU extends NutCoreModule {
+    // Wrapper class for single-cycle combinational logic
     val io = IO( new CustomFuIO )
 
+    // input signals
     val valid = io.in.valid
     val src1 = io.in.bits.src1
-    
-    val sigmoidHardware = Module(new SigmoidImpl).io
+    val src2 = io.in.bits.src2 // DontCare
+    val func = io.in.bits.func //DontCare
 
-    sigmoidHardware.in := src1(11, 0)
+    CustomFUType match {
+        case "Sigmoid" => {
+            val sigmoidHardware = Module(new SigmoidImpl).io
+            sigmoidHardware.in := src1(11, 0)
+            io.out.bits := sigmoidHardware.out
+        }
+        case "AddDec"  => {
+            val addDecHardware = Module(new CustomDecAdder).io
+            io <> addDecHardware
+        }
+        case _ => throw new Exception("CustomFU Not Implemented")
+    }
 
-    // out
+    // output signals
     io.in.ready := io.out.ready
     io.out.valid := valid
-    io.out.bits := sigmoidHardware.out
+    
 }
+
+// class SigmoidFu(hasFloatWrapper: Boolean=false) extends NutCoreModule {
+//     val io = IO( new CustomFuIO )
+
+//     val valid = io.in.valid
+//     val src1 = io.in.bits.src1
+    
+//     val sigmoidHardware = Module(new SigmoidImpl).io
+
+//     sigmoidHardware.in := src1(11, 0)
+
+//     // out
+//     io.in.ready := io.out.ready
+//     io.out.valid := valid
+//     io.out.bits := sigmoidHardware.out
+// }
+
+
 
 class CustomDecAdder extends NutCoreModule {
     val io = IO( new CustomFuIO )

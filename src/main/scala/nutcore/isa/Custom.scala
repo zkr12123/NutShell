@@ -3,6 +3,7 @@ package nutcore
 
 import chisel3._
 import chisel3.util._ 
+import top.Settings
 
 
 object RVCustom extends HasInstrType {
@@ -10,7 +11,13 @@ object RVCustom extends HasInstrType {
     def SIGMOID    = BitPat("b0000000_?????_?????_???_?????_0101011")
 
     val table = Array(
-        ADDDEC            -> List(InstrR, FuType.adddec, CustomFuOpType.default),
-        SIGMOID           -> List(InstrR, FuType.sigmoid, CustomFuOpType.default)
+        ADDDEC            -> List(InstrR, FuType.custom, CustomFuOpType.default),
+        SIGMOID           -> List(InstrR, FuType.custom, CustomFuOpType.default)
     ) // Decode table used in IDU
+
+    def customTable(CustomFU: String) = CustomFU match {
+        case "Sigmoid" => Array(SIGMOID  -> List(InstrR, FuType.custom, CustomFuOpType.default))
+        case "AddDec"  => Array(ADDDEC   -> List(InstrR, FuType.custom, CustomFuOpType.default))
+    }
+
 }
