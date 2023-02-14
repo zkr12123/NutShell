@@ -31,7 +31,7 @@ class CustomFU extends NutCoreModule {
     val src2 = io.in.bits.src2 // DontCare
     val func = io.in.bits.func //DontCare
 
-    CustomFUType match {
+    CustomFUType match { // string val inherited from HasNutCoreParameter
         case "Sigmoid" => {
             val sigmoidHardware = Module(new SigmoidImpl).io
             sigmoidHardware.in := src1(11, 0)

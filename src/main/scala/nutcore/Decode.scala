@@ -80,6 +80,7 @@ object Instructions extends HasInstrType with HasNutCoreParameter {
     Priviledged.table ++
     RVAInstr.table ++
     RVZicsrInstr.table ++ RVZifenceiInstr.table ++
+    // Enabling Custom Instruction
     (if (HasCustomExtension) RVCustom.customTable(CustomFUType) else Nil)
 }
 

@@ -69,7 +69,8 @@ object TopMain extends App {
     )
   } else {
     (new ChiselStage).execute(args, Seq(
-      ChiselGeneratorAnnotation(() => new Top))
+      // ChiselGeneratorAnnotation(() => new Top))
+      ChiselGeneratorAnnotation(() => new NutShell()(NutCoreConfig())))
     )
   }
 }
