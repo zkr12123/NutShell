@@ -94,3 +94,9 @@ set_property steps.phys_opt_design.is_enabled true [get_runs impl_1]
 
 # update compile order 
 update_compile_order -fileset sources_1
+
+# PR Flow
+# set pr_flow "true"
+# if {${pr_flow} == "true"} {
+#   source ${fpga_dir}/pr_script/NutShell_pr.tcl
+# }

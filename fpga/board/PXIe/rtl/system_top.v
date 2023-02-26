@@ -14,10 +14,12 @@ module system_top (
   `axi_wire(AXI_MEM, 64, 8);
   `axi_wire(AXI_MMIO, 64, 8);
   `axi_wire(AXI_DMA, 64, 16);
+  // Added AXI interface for modified NutShell_peripheral block design
   `axi_wire(NutShell_io_frontend, 64, 1);
   `axi_wire(NutShell_io_mem, 64, 1);
   `axi_wire(NutShell_io_mmio, 64, 1);
   
+  // Added signal wires for modified NutShell_peripheral block design
   wire NutShell_reset;
   wire [38:0] NutShell_io_ila_WBUpc;
   wire NutShell_io_ila_WBUvalid;
@@ -72,6 +74,7 @@ module system_top (
     corerstn_sync[1] <= corerstn_sync[0];
   end
 
+  /* Removed nutshell block design instantiation */
   // nutshell nutshell_i(
   //   `axi_connect_if(AXI_MEM, AXI_MEM),
   //   `axi_connect_if(AXI_DMA, AXI_DMA),
@@ -85,6 +88,7 @@ module system_top (
   //   .uncorerstn(uncorerstn)
   // );
 
+  // Added instantiation for NutShell RTL
   NutShell nutshell_inst (
     `axi_connect_if_no_id(io_frontend, NutShell_io_frontend),
     `axi_connect_if_no_id(io_mem, NutShell_io_mem),
@@ -103,6 +107,7 @@ module system_top (
     .io_ila_InstrCnt(NutShell_io_ila_InstrCnt)
   );
 
+  // Added instantiation for nutshell_peripheral block design
   nutshell_peripheral nutshell_peripheral_i (
     `axi_connect_if(AXI_MEM, AXI_MEM),
     `axi_connect_if(AXI_DMA, AXI_DMA),
