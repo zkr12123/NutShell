@@ -24,18 +24,22 @@ class CustomFuIO extends FunctionUnitIO {
 class CustomFU extends NutCoreModule {
     // Wrapper class for single-cycle combinational logic
     val io = IO( new CustomFuIO )
+    dontTouch(io)
 
     // input signals
     val valid = io.in.valid
     val src1 = io.in.bits.src1
     val src2 = io.in.bits.src2 // DontCare
     val func = io.in.bits.func //DontCare
+    val instr = io.cfIn.instr
+
 
     CustomFUType match { // string val inherited from HasNutCoreParameter
         case "Sigmoid" => {
             val sigmoidHardware = Module(new SigmoidImpl).io
             sigmoidHardware.in := src1(11, 0)
             io.out.bits := sigmoidHardware.out
+            // instr := DontCare
         }
         case "AddDec"  => {
             val addDecHardware = Module(new CustomDecAdder).io
