@@ -48,6 +48,9 @@ trait HasNutCoreParameter {
   val EnableOutOfOrderExec = Settings.get("EnableOutOfOrderExec")
   val EnableMultiCyclePredictor = false // false unless a customized condition branch predictor is included
   val EnableOutOfOrderMemAccess = false // enable out of order mem access will improve OoO backend's performance
+  // Enabling custom instruction for NutShell
+  val CustomFUType = "Sigmoid" // Settings.get("CustomFU")
+  val HasCustomExtension = true
 }
 
 trait HasNutCoreConst extends HasNutCoreParameter {
@@ -67,10 +70,12 @@ abstract class NutCoreBundle extends Bundle with HasNutCoreParameter with HasNut
 case class NutCoreConfig (
   FPGAPlatform: Boolean = true,
   EnableDebug: Boolean = Settings.get("EnableDebug"),
-  EnhancedLog: Boolean = true 
+  EnhancedLog: Boolean = true,
+  // CustomFU: String = "Sigmoid"
 )
 // Enable EnhancedLog will slow down simulation, 
 // but make it possible to control debug log using emu parameter
+// CustomFU: "Sigmoid" or "AddDec"
 
 object AddressSpace extends HasNutCoreParameter {
   // (start, size)

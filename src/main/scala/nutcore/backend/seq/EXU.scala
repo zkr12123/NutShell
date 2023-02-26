@@ -39,9 +39,23 @@ class EXU(implicit val p: NutCoreConfig) extends NutCoreModule {
   val src2 = io.in.bits.data.src2(XLEN-1,0)
 
   val (fuType, fuOpType) = (io.in.bits.ctrl.fuType, io.in.bits.ctrl.fuOpType)
-
+  // A vector of valid signal for each fu
   val fuValids = Wire(Vec(FuType.num, Bool()))
   (0 until FuType.num).map (i => fuValids(i) := (fuType === i.U) && io.in.valid && !io.flush)
+
+  // Add custom FU
+  // Simple FU, completes in 0 cycle
+  // Sigmoid or AddDec
+  // val custom: CustomFuIO = if (CustomFUType == "Sigmoid") Module(new SigmoidFu(hasFloatWrapper=false)).io else Module(new CustomDecAdder).io
+  val custom = Module( new CustomFU ).io
+  val customOut = custom.out.bits
+  custom.in.bits.src1 := src1
+  custom.in.bits.src2 := DontCare
+  custom.in.bits.func := DontCare
+  custom.in.valid := fuValids(FuType.custom)
+  custom.cfIn := io.in.bits.cf
+  custom.out.ready := true.B 
+  
 
   val alu = Module(new ALU(hasBru = true))
   val aluOut = alu.access(valid = fuValids(FuType.alu), src1 = src1, src2 = src2, func = fuOpType)
@@ -108,6 +122,12 @@ class EXU(implicit val p: NutCoreConfig) extends NutCoreModule {
     FuType.mdu -> mdu.io.out.valid
   ))
 
+  // default to dontCare
+  // add customFU commit
+  io.out.bits.commits := DontCare
+  // io.out.bits.commits(FuType.adddec)  := adddecOut
+  // io.out.bits.commits(FuType.sigmoid) := sigmoidOut
+  io.out.bits.commits(FuType.custom) := customOut
   io.out.bits.commits(FuType.alu) := aluOut
   io.out.bits.commits(FuType.lsu) := lsuOut
   io.out.bits.commits(FuType.csr) := csrOut
@@ -115,7 +135,7 @@ class EXU(implicit val p: NutCoreConfig) extends NutCoreModule {
   io.out.bits.commits(FuType.mou) := 0.U
 
   io.in.ready := !io.in.valid || io.out.fire()
-
+  // ???
   io.forward.valid := io.in.valid
   io.forward.wb.rfWen := io.in.bits.ctrl.rfWen
   io.forward.wb.rfDest := io.in.bits.ctrl.rfDest

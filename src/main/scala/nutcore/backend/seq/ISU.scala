@@ -34,24 +34,33 @@ class ISU(implicit val p: NutCoreConfig) extends NutCoreModule with HasRegFilePa
   })
 
   io.out.bits := DontCare
+  // 5-bit Src/Dest reg operands
   val rfSrc1 = io.in(0).bits.ctrl.rfSrc1
   val rfSrc2 = io.in(0).bits.ctrl.rfSrc2
   val rfDest1 = io.in(0).bits.ctrl.rfDest
 
   def isDepend(rfSrc: UInt, rfDest: UInt, wen: Bool): Bool = (rfSrc =/= 0.U) && (rfSrc === rfDest) && wen
-
+  // Source register with forward/WB IO asserted and valid, 
+  // ensentially checks which stage (EXU/WB) the data required by Src reg is at
   val forwardRfWen = io.forward.wb.rfWen && io.forward.valid
   val dontForward1 = (io.forward.fuType =/= FuType.alu) && (io.forward.fuType =/= FuType.lsu)
   val src1DependEX = isDepend(rfSrc1, io.forward.wb.rfDest, forwardRfWen)
   val src2DependEX = isDepend(rfSrc2, io.forward.wb.rfDest, forwardRfWen)
   val src1DependWB = isDepend(rfSrc1, io.wb.rfDest, io.wb.rfWen)
   val src2DependWB = isDepend(rfSrc2, io.wb.rfDest, io.wb.rfWen)
-
+  /* 1. Forward from EXU if: SrcDependEX and fuType is alu or lsu
+     2. Forward from WB  if: 
+        SrcDependWB and {
+          Src reg does not depend on EX
+          or
+          Src reg depends on EX but dontForward1 i.e.(ExfuType is not alu or lsu) 
+      }
+  */
   val src1ForwardNextCycle = src1DependEX && !dontForward1
   val src2ForwardNextCycle = src2DependEX && !dontForward1
   val src1Forward = src1DependWB && Mux(dontForward1, !src1DependEX, true.B)
   val src2Forward = src2DependWB && Mux(dontForward1, !src2DependEX, true.B)
-
+  // ScoreBoard for identifying RAW 
   val sb = new ScoreBoard
   val src1Ready = !sb.isBusy(rfSrc1) || src1ForwardNextCycle || src1Forward
   val src2Ready = !sb.isBusy(rfSrc2) || src2ForwardNextCycle || src2Forward
