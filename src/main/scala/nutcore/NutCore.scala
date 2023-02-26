@@ -49,8 +49,8 @@ trait HasNutCoreParameter {
   val EnableMultiCyclePredictor = false // false unless a customized condition branch predictor is included
   val EnableOutOfOrderMemAccess = false // enable out of order mem access will improve OoO backend's performance
   // Enabling custom instruction for NutShell
-  val CustomFUType = "AddDec" // Settings.get("CustomFU")
-  val HasCustomExtension = false
+  val CustomFUType = "Sigmoid" // Settings.get("CustomFU")
+  val HasCustomExtension = true
 }
 
 trait HasNutCoreConst extends HasNutCoreParameter {
