@@ -55,6 +55,9 @@ foreach v_file [glob "${fpga_dir}/../build/module_sources/*.v"] {
   lappend src_files "[file normalize $v_file]"
 }
 
+# Fix Vivado synthesis missing file error
+lappend src_files "[file normalize "${fpga_dir}/array_ext.v"]"
+
 add_files -norecurse -fileset sources_1 $src_files
 set_property include_dirs "${fpga_dir}/../build/module_sources/" [get_filesets sources_1]
 
